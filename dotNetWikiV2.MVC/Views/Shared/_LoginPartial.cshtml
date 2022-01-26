@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using dotNetWikiV2.MVC.Models.DB
+
+@inject SignInManager<WikiUser> SignInManager
+@inject UserManager<WikiUser> UserManager
+
+@{ 
+
+    WikiUser user = null;
+    if(User.Identity.IsAuthenticated)
+        user = await UserManager.GetUserAsync(User);
+}
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        <img class="bg-indigo-100 p-4 rounded-t-lg" src="@user.AvatarUrl" />
+        <a id="manage" class="bg-indigo-100 p-4 rounded-b-lg text-center" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@UserManager.GetUserName(User)</a>
+    </li>
+    <li class="text-sm text-center">
+        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Log out</button>
+        </form>
+    </li>
+}
+else
+{
+    <p class="bg-indigo-100 p-4 rounded-b-lg text-center">You are not logged in.</p>
+    <li class="nav-item">
+        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+}
+</ul>

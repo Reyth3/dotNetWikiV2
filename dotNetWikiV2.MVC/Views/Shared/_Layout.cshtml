@@ -1,0 +1,65 @@
+﻿@inject AppDbContext _context
+@{ 
+    var settings = _context.InstallationSettings.First();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @settings.SiteName</title>
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="m-2 flex">
+        <aside class="max-w-sm bg-indigo-200 rounded-xl m-2 p-2 shadow-xl">
+            @if (settings.SiteLogoUrl != null)
+            {
+                <img style="max-height: 104px" class="m-2 mx-auto" src="@settings.SiteLogoUrl" alt="@settings.SiteName Logo" />
+            }
+            <h1 class="text-2xl text-center">
+                <a href="/">
+                    @settings.SiteName
+                </a>
+            </h1>
+            <hr class="mt-2" />
+            <p class="text-center font-medium">Menu</p>
+            <hr class="mb-2" />
+            <ul>
+                <li>
+                    <a asp-action="Index" asp-controller="Categories">Browse Categories</a>
+                </li>
+                <li>
+                    <a asp-action="Random" asp-controller="Pages">Random Page</a>
+                </li>
+                <li>
+                    <a asp-action="Create" asp-controller="Categories">Create a new Category</a>
+                </li>
+                <li>
+                    <a asp-action="Create" asp-controller="Pages">Create a New Page</a>
+                </li>
+            </ul>
+            <hr class="mt-2" />
+            <p class="text-center font-medium">Panel Użytkownika</p>
+            <hr class="mb-2" />
+
+            <div class="my-4">
+                <partial name="_LoginPartial" />
+            </div>
+        </aside>
+        <main class="flex-grow flex-1 m-2 p-2 border-2 border-solid border-indigo-200 rounded-xl">
+            @RenderBody()
+        </main>
+    </div>
+    <div class="m-4 bg-indigo-400 rounded-xl p-4 text-center text-indigo-100">
+        &copy; 2021 - 2022 Dawid (Reyth) Serafin
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

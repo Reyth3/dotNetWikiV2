@@ -1,0 +1,16 @@
+﻿@model Comment
+
+<form asp-action="Create" asp-controller="Comments">
+    <h4 class="font-medium text-lg">Post a new comment</h4>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Content" class="control-label"></label>
+        <input asp-for="Content" class="block p-2 rounded-lg border-2 border-solid w-full" />
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+    <input asp-for="PageId" type="hidden" value="@Model.PageId" />
+
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>

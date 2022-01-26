@@ -1,0 +1,41 @@
+﻿@model dotNetWikiV2.MVC.Models.DB.Page
+
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h4 class="text-2xl pt-2">@Model.Title</h4>
+    <a asp-action="Edit" asp-route-id="@Model.PageId">Edit</a> |
+    <a asp-action="Show" asp-controller="Comments" asp-route-id="@Model.PageId">Discussion</a>
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+    {
+        <span>|</span>
+        <a asp-action="Delete" asp-route-id="@Model.PageId">Delete</a>
+    }
+    <hr />
+    <div class="p-2 border-2 border-dashed">
+        <article class="m-2 prose">
+            @Westwind.AspNetCore.Markdown.Markdown.ParseHtmlString(Model.Content)
+        </article>
+
+        <div class="bg-indigo-200 rounded-xl p-2">
+            <span>Category:</span>
+            <span>
+                @Html.ActionLink(Model.Category.Name, "Show", "Categories", new { id = Model.CategoryId })
+            </span>
+        </div>
+        <hr class="m-4" />
+        <div class="changes">
+            @foreach (var change in Model.Changes)
+            {
+                <div class="flex space-x-4">
+                    <span class="text-gray-500">@change.Timestamp.ToLocalTime().ToString()</span>
+                    <span class="font-bold">@change.Author.UserName</span>
+                    <span>@change.Description</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>

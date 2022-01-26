@@ -1,0 +1,54 @@
+﻿@model (dotNetWikiV2.MVC.Models.DB.Page, List<dotNetWikiV2.MVC.Models.DB.Comment>, dotNetWikiV2.MVC.Models.DB.Comment)
+@inject Microsoft.AspNetCore.Identity.UserManager<WikiUser> _userManager
+@using System.Security.Claims
+
+@{
+    ViewData["Title"] = $"Discussion for {Model.Item1.Title}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Guid currentUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "00000000-0000-0000-0000-000000000000");
+}
+
+<div>
+    <h4 class="text-2xl pt-2">
+    <span>Discussion for</span>
+    <span>
+        '@Model.Item1.Title'
+    </span>
+    </h4>
+    <hr />
+    <div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            await Html.RenderPartialAsync("_createForm", new Comment() { PageId = Model.Item1.PageId });
+        }
+        @if (Model.Item2.Count == 0)
+        {
+            <div class="bg-indigo-200 rounded-lg m-2 p-2 text-center">No discussion for this page yet.</div>
+        }
+        else
+        {
+            <ul class="m-2 p-2">
+                @foreach (var comment in Model.Item2.OrderBy(o => o.Timestamp))
+                {
+                    <li class="bg-indigo-50 block rounded-lg p-2 m-2 flex space-x-4">
+                        <img width="72" height="72" src="@comment.Author.AvatarUrl")" alt="@comment.Author.UserName" />
+                        <div>
+                            <p>
+                                <span class="font-medium">@comment.Author.UserName</span>
+                                <span class="font-light text-gray-800">@comment.Timestamp.ToLocalTime().ToString()</span>
+                                @if(comment.Author.Id == currentUserId)
+                                {
+                                    <span>|</span>
+                                    <a asp-action="Delete" asp-route-id="@comment.CommentId">Delete</a>
+                                }
+                            </p>
+                            <div class="prose">
+                                @Westwind.AspNetCore.Markdown.Markdown.ParseHtmlString(comment.Content)
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>

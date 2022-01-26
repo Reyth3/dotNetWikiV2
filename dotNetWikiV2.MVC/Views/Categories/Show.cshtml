@@ -1,0 +1,46 @@
+﻿@model dotNetWikiV2.MVC.Models.DB.Category
+@inject AppDbContext _context
+
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var subcategories = _context.Categories.Where(o => o.ParentId == Model.CategoryId).ToList();
+}
+
+<div>
+    <h4 class="text-2xl pt-2">@Model.Name</h4>
+    <a asp-action="Edit" asp-route-id="@Model.CategoryId">Edit</a>
+    <hr />
+    <div class="prose m-2">
+        @Westwind.AspNetCore.Markdown.Markdown.ParseHtmlString(Model.Description)
+    </div>
+    <div>
+        <h5 class="text-lg pt-2">Subcategories</h5>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+            @if (subcategories.Count == 0)
+            {
+                <div class="bg-indigo-200 rounded-lg m-2 p-2 text-center">No subcategories have been created yet</div>
+            } else foreach (var _page in subcategories.OrderBy(o => o.Name))
+            {
+                <div class="text-center bg-indigo-200 rounded-md">
+                    @Html.ActionLink(_page.Name, "Show", "Categories", new { id = _page.CategoryId }, new { @class = "" })
+                </div>
+            }
+        </div>
+    </div>
+    <div>
+        <p>The category contains the following pages:</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+            @if (Model.Pages.Count == 0)
+            {
+                <div class="bg-indigo-200 rounded-lg m-2 p-2 text-center">No pages in this category.</div>
+            } else foreach (var _page in Model.Pages.OrderBy(o => o.Title))
+            {
+            <div class="text-center bg-indigo-200 rounded-md">
+                @Html.ActionLink(_page.Title, "Show", "Pages", new { id = _page.PageId }, new { @class = "" })
+            </div>
+            }
+        </div>
+    </div>
+
+</div>
