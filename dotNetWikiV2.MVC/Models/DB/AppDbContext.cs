@@ -11,7 +11,7 @@ namespace dotNetWikiV2.MVC.Models.DB
 {
     public class AppDbContext : IdentityDbContext<WikiUser, IdentityRole<Guid>, Guid>
     {
-        public AppDbContext(DbContextOptions options) : base(options) { }
+        public AppDbContext(DbContextOptions options) : base(options) {}
 
         public DbSet<Page> Pages { get; set; }
         public DbSet<Category> Categories { get; set; }
